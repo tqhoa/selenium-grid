@@ -8,16 +8,20 @@ async function googleSearch(browser) {
 
   try {
     // Navigate to Url
-    await driver.get("https://www.google.com");
+    await driver.get("https://www.facebook.com");
     // Enter text "Automation Bro" and perform keyboard action "Enter"
     await driver.findElement(By.name("q")).sendKeys("test", Key.ENTER);
 
     console.log(await (await driver.getCapabilities()).getBrowserName());
     console.log(await (await driver.getCapabilities()).getBrowserVersion());
   } finally {
-    driver.quit();
+    setTimeout(() => {
+      driver.quit();
+    }, 5000)
   }
 }
 
-googleSearch('chrome')
-googleSearch('chrome')
+//googleSearch('chrome')
+for(let i = 1; i < 20; i++) {
+  googleSearch('chrome');
+}

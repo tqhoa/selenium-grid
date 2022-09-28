@@ -29,22 +29,46 @@ services:
    - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
    - HUB_PORT_4444_TCP_ADDR=selenium-hub
    - HUB_PORT_4444_TCP_PORT=4444
-#   - SE_NODE_MAX_SESSIONS=3
-#   - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+   - SE_NODE_MAX_SESSIONS=3
+   - SE_NODE_OVERRIDE_MAX_SESSIONS=true
 #  ports:
 #   - "5901:5900"
 
 ###############################################
- nodejs:
-  container_name: selenium-nodejs
+  # nodejs:
+    #  container_name: selenium-nodejs
+    #build:
+#context: ./services/nodejs
+#   dockerfile: Dockerfile
+    #  volumes:
+      #   - ./services/nodejs/src:/home/app
+      #   - /home/app/node_modules
+    #  environment:
+      #   - HUB_PORT_4444_TCP_ADDR=selenium-hub
+      #   - HUB_PORT_4444_TCP_PORT=4444
+    #  networks:
+      #   - app
+
+### Pyapp ###########################################
+ pyapp:
+  container_name: selenium-python
   build:
-   context: ./services/nodejs
-   dockerfile: Dockerfile
+    context: ./services/app
+    args:
+      - PYTHON_VERSION=${PYTHON_VERSION}
+  command: python manage.py run -h 0.0.0.0
   volumes:
-   - ./services/nodejs/src:/home/app
-   - /home/app/node_modules
+    - ./services/app/:/usr/src/app/
+  ports:
+    - "${FLASK_PORT}:5000"
+  restart: always
   environment:
-   - HUB_PORT_4444_TCP_ADDR=selenium-hub
-   - HUB_PORT_4444_TCP_PORT=4444
+    - FLASK_APP=${FLASK_APP}
+    - FLASK_ENV=${FLASK_ENV}
+    - APP_FOLDER=${APP_FOLDER}
+    - TZ=Asia/Ho_Chi_Minh
+    - HUB_PORT_4444_TCP_ADDR=selenium-hub
+    - HUB_PORT_4444_TCP_PORT=4444
   networks:
-   - app
+    - app
+
